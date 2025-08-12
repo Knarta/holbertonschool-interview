@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Module for solving the lockboxes problem.
+Determines if all boxes can be unlocked given keys in each box.
+"""
 
 def canUnlockAll(boxes):
     """
