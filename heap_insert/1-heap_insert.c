@@ -1,16 +1,38 @@
 #include "binary_trees.h"
 
 /**
- * binary_tree_size - measures the size of a binary tree
- * @tree: pointer to the root node of the tree to measure the size
- * Return: size of the tree, or 0 if tree is NULL
+ * find_insertion_parent - finds the first node missing a child (BFS)
+ * @root: pointer to the root node
+ * Return: Parent node where the new node should be inserted
  */
-size_t binary_tree_size(const binary_tree_t *tree)
+heap_t *find_insertion_parent(heap_t *root)
 {
-	if (tree == NULL)
-		return (0);
+	int front = 0, rear = 0;
+	heap_t **queue = malloc(sizeof(heap_t *) * 1024);
 
-	return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
+	if (queue == NULL)
+		return (NULL);
+
+	queue[rear++] = root; /* Enqueue root */
+
+	while (front < rear)
+	{
+		heap_t *current = queue[front++]; /* Dequeue */
+
+		if (!current->left || !current->right)
+		{
+			free(queue);
+			return (current);
+		}
+
+		if (current->left)
+			queue[rear++] = current->left; /* Enqueue left child */
+		if (current->right)
+			queue[rear++] = current->right; /* Enqueue right child */
+	}
+
+	free(queue);
+	return (NULL);
 }
 
 /**
@@ -21,60 +43,45 @@ size_t binary_tree_size(const binary_tree_t *tree)
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *new_node, *parent; 
-	int i, size, tmp;
+	heap_t *new_node, *parent;
 
 	if (root == NULL)
+		return (NULL);
+
+	if (*root == NULL)
+	{
+		new_node = malloc(sizeof(heap_t));
+		if (new_node == NULL)
+			return (NULL);
+		new_node->n = value;
+		new_node->parent = NULL;
+		new_node->left = NULL;
+		new_node->right = NULL;
+		*root = new_node;
+		return (new_node);
+	}
+
+	parent = find_insertion_parent(*root);
+	if (parent == NULL)
 		return (NULL);
 
 	new_node = malloc(sizeof(heap_t));
 	if (new_node == NULL)
 		return (NULL);
-
 	new_node->n = value;
-	new_node->parent = NULL;
+	new_node->parent = parent;
 	new_node->left = NULL;
 	new_node->right = NULL;
 
-	if (!*root)
-	{
-		*root = new_node;
-		return (new_node);
-	}
-
-	size = binary_tree_size(*root);
-
-	i = size + 1;
-	parent = *root;
-
-	while (i > 1)
-	{
-		if (i % 2 == 0)
-		{
-			if (parent->left == NULL)
-				break;
-			parent = parent->left;
-		}
-		else
-		{
-			if (parent->right == NULL)
-				break;
-			parent = parent->right;
-		}
-
-		i /= 2;	
-	}
-
-	if (!parent->left)
+	if (parent->left == NULL)
 		parent->left = new_node;
 	else
 		parent->right = new_node;
 
-	new_node->parent = parent;
-
+	/* Bubble up to maintain max heap property */
 	while (new_node->parent && new_node->n > new_node->parent->n)
 	{
-		tmp = new_node->n;
+		int tmp = new_node->n;
 		new_node->n = new_node->parent->n;
 		new_node->parent->n = tmp;
 		new_node = new_node->parent;
