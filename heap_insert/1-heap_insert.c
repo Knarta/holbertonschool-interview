@@ -1,6 +1,19 @@
 #include "binary_trees.h"
 
 /**
+ * binary_tree_size - measures the size of a binary tree
+ * @tree: pointer to the root node of the tree to measure the size
+ * Return: size of the tree, or 0 if tree is NULL
+ */
+size_t binary_tree_size(const binary_tree_t *tree)
+{
+	if (tree == NULL)
+		return (0);
+
+	return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
+}
+
+/**
  * heap_insert - puts a value in the heap
  * @root: pointer to the root
  * @value: the value to put
@@ -8,8 +21,8 @@
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *new_node, *parent, *current;
-	int tmp;
+	heap_t *new_node, *parent; 
+	int i, size, tmp;
 
 	if (root == NULL)
 		return (NULL);
@@ -23,66 +36,49 @@ heap_t *heap_insert(heap_t **root, int value)
 	new_node->left = NULL;
 	new_node->right = NULL;
 
-	if (*root == NULL)
+	if (!*root)
 	{
 		*root = new_node;
 		return (new_node);
 	}
 
-	parent = find_parent(*root);
-	if (parent->left == NULL)
+	size = binary_tree_size(*root);
+
+	i = size + 1;
+	parent = *root;
+
+	while (i > 1)
+	{
+		if (i % 2 == 0)
+		{
+			if (parent->left == NULL)
+				break;
+			parent = parent->left;
+		}
+		else
+		{
+			if (parent->right == NULL)
+				break;
+			parent = parent->right;
+		}
+
+		i /= 2;	
+	}
+
+	if (!parent->left)
 		parent->left = new_node;
 	else
 		parent->right = new_node;
 
 	new_node->parent = parent;
 
-	/* Bubble up to maintain max heap property */
-	current = new_node;
-	while (current->parent != NULL && current->n > current->parent->n)
+	while (new_node->parent && new_node->n > new_node->parent->n)
 	{
-		tmp = current->n;
-		current->n = current->parent->n;
-		current->parent->n = tmp;
-		current = current->parent;
+		tmp = new_node->n;
+		new_node->n = new_node->parent->n;
+		new_node->parent->n = tmp;
+		new_node = new_node->parent;
 	}
 
 	return (new_node);
-}
-
-/**
- * find_parent - finds the parent node for the new node
- * @root: the root of the heap
- * Return: the parent node where to insert
- */
-heap_t *find_parent(heap_t *root)
-{
-	heap_t **args;
-	int start = 0, end = 0, size = 1024;
-	heap_t *node;
-
-	args = malloc(sizeof(heap_t *) * size);
-	if (args == NULL)
-		return (root);
-
-	args[end++] = root;
-
-	while (start < end)
-	{
-		node = args[start++];
-
-		/* If this node has space for a child, return it */
-		if (node->left == NULL || node->right == NULL)
-		{
-			free(args);
-			return (node);
-		}
-
-		/* Add children to queue for level-order traversal */
-		args[end++] = node->left;
-		args[end++] = node->right;
-	}
-
-	free(args);
-	return (root);
 }
