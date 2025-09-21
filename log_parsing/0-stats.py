@@ -22,21 +22,21 @@ def parse_line(line):
     Returns (status_code, file_size) or (None, file_size) if only size found
     """
     line = line.strip()
-    
+
     pattern_full = r'(\d{3}) (\d+)$'
     match_full = re.search(pattern_full, line)
-    
+
     if match_full:
         status_code = int(match_full.group(1))
         file_size = int(match_full.group(2))
         return status_code, file_size
-    
+
     pattern_size = r'(\d+)$'
     match_size = re.search(pattern_size, line)
     if match_size:
         file_size = int(match_size.group(1))
         return None, file_size
-    
+
     return None, None
 
 
@@ -56,7 +56,7 @@ def main():
             if file_size is not None:
                 total_size += file_size
                 line_count += 1
-                
+
                 if status_code is not None and status_code in valid_codes:
                     status_counts[status_code] += 1
 
