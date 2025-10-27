@@ -2,11 +2,14 @@
 #include <math.h>
 
 /**
- * is_empty - Checks if a position should be empty in a Menger sponge
- * @x: X coordinate
- * @y: Y coordinate
+ * is_empty - Determines if a coordinate position should be empty
+ * The function checks if both x and y coordinates have the middle digit (1)
+ * in base 3 representation at any level, which means the position is empty.
  *
- * Return: 1 if position is empty, 0 if filled
+ * @x: X coordinate of the position to check
+ * @y: Y coordinate of the position to check
+ *
+ * Return: 1 if position should be empty, 0 if it should be filled
  */
 static int is_empty(int x, int y)
 {
@@ -21,8 +24,11 @@ static int is_empty(int x, int y)
 }
 
 /**
- * menger - Draws a 2D Menger Sponge
- * @level: Level of the Menger Sponge to draw
+ * menger - Prints a 2D Menger Sponge fractal of the specified level
+ * This function draws a Menger sponge pattern where each level N is a 3x3
+ * grid of level N-1 sponges, except for the center which is empty.
+ *
+ * @level: The recursion level of the Menger Sponge (0 being a single #)
  */
 void menger(int level)
 {
