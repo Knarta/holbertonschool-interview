@@ -9,8 +9,9 @@
  */
 static avl_t *create_node(avl_t *parent, int value)
 {
-	avl_t *node = malloc(sizeof(avl_t));
+	avl_t *node;
 
+	node = malloc(sizeof(avl_t));
 	if (node == NULL)
 		return (NULL);
 
@@ -39,18 +40,13 @@ static avl_t *build_avl(int *array, size_t start, size_t end, avl_t *parent)
 	if (start >= end)
 		return (NULL);
 
-	/* Find the middle element to maintain balance */
-	mid = start + (end - start) / 2;
+	mid = start + (end - start - 1) / 2;
 
-	/* Create root node with middle element */
 	root = create_node(parent, array[mid]);
 	if (root == NULL)
 		return (NULL);
 
-	/* Recursively build left subtree */
 	root->left = build_avl(array, start, mid, root);
-
-	/* Recursively build right subtree */
 	root->right = build_avl(array, mid + 1, end, root);
 
 	return (root);
