@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """
-Rainwater trapping problem solution.
+Module for calculating rainwater retention.
+Given a list of wall heights, calculates how many square units
+of water will be retained after it rains.
 """
 
 
@@ -37,5 +39,3 @@ def rain(walls):
             total_water += water
 
     return total_water
-
-
