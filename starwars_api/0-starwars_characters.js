@@ -9,16 +9,16 @@ if (!movieId) {
   process.exit(1);
 }
 
-const filmUrl = 'https://swapi-api.hbtn.io/api/films/' + movieId + '/';
+const filmUrl = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
 
-request(filmUrl, function (error, response, body) {
+request(filmUrl, (error, response, body) => {
   if (error) {
     console.error('Error:', error);
     return;
   }
 
   if (response.statusCode !== 200) {
-    console.error('Error: Status code ' + response.statusCode);
+    console.error(`Error: Status code ${response.statusCode}`);
     return;
   }
 
@@ -32,8 +32,8 @@ request(filmUrl, function (error, response, body) {
   let completed = 0;
   const characterNames = new Array(characters.length);
 
-  characters.forEach(function (characterUrl, index) {
-    request(characterUrl, function (err, res, charBody) {
+  characters.forEach((characterUrl, index) => {
+    request(characterUrl, (err, res, charBody) => {
       if (err) {
         console.error('Error:', err);
         return;
@@ -44,7 +44,7 @@ request(filmUrl, function (error, response, body) {
       completed++;
 
       if (completed === characters.length) {
-        characterNames.forEach(function (name) {
+        characterNames.forEach(name => {
           console.log(name);
         });
       }
