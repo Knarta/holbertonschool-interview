@@ -20,7 +20,7 @@ void print_array(int *array, size_t size)
 }
 
 /**
- * advanced_binary_recursive: Recursively searches value in a sorted array
+ * advanced_binary_recursive - Recursively searches value in a sorted array
  * @array: Pointer to the first element of the array to search in
  * @left: Left boundary index
  * @right: Right boundary index
