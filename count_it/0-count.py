@@ -4,7 +4,6 @@ Module that queries the Reddit API and returns the number of subscribers
 """
 
 import requests
-import re
 
 
 def count_words(subreddit, word_list):
