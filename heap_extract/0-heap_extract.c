@@ -20,6 +20,9 @@ static void heapify_down(heap_t *node)
 	heap_t *largest = node;
 	int tmp;
 
+	if (node == NULL)
+		return;
+
 	if (node->left && node->left->n > largest->n)
 		largest = node->left;
 	if (node->right && node->right->n > largest->n)
@@ -29,6 +32,7 @@ static void heapify_down(heap_t *node)
 		tmp = node->n;
 		node->n = largest->n;
 		largest->n = tmp;
+		heapify_down(largest);
 	}
 }
 
@@ -41,8 +45,8 @@ static void heapify_down(heap_t *node)
 int heap_extract(heap_t **root)
 {
 	heap_t *last_node, *parent;
-	size_t size, last_index;
-	int value;
+	size_t size;
+	int value, head, tail;
 
 	if (root == NULL || *root == NULL)
 		return (0);
@@ -57,18 +61,29 @@ int heap_extract(heap_t **root)
 	}
 
 	size = tree_size(*root);
-	last_index = size - 1;
 
+	/* Find last node using level-order traversal (BFS) */
+	heap_t **queue = malloc(sizeof(heap_t *) * size);
+	if (queue == NULL)
+		return (0);
+
+	head = 0;
+	tail = 0;
+	queue[tail++] = *root;
 	last_node = *root;
-	for (size_t i = 0; i < last_index; i++)
+
+	while (head < tail)
 	{
-		if (last_node->left)
-			last_node = last_node->left;
-		else if (last_node->right)
-			last_node = last_node->right;
-		else
-			break;
+		heap_t *current = queue[head++];
+		last_node = current;
+
+		if (current->left)
+			queue[tail++] = current->left;
+		if (current->right)
+			queue[tail++] = current->right;
 	}
+
+	free(queue);
 
 	(*root)->n = last_node->n;
 	parent = last_node->parent;
