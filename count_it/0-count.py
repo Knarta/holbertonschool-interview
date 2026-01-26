@@ -62,6 +62,6 @@ def count_words(subreddit, word_list):
         return
 
     items = list(filtered.items())
-    items.sort(key=lamba x: (-x[1], x[0]))
+    items.sort(key=lambda x: (-x[1], x[0]))
     for w, c in items:
         print(f"{w}: {c}")
