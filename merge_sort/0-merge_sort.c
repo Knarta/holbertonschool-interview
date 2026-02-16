@@ -1,24 +1,6 @@
 #include "sort.h"
 
 /**
- * print_array - Prints an array of integers
- * @array: The array to be printed
- * @size: Number of elements in @array
- */
-void print_array(const int *array, size_t size)
-{
-	size_t i;
-
-	for (i = 0; i < size; i++)
-	{
-		if (i > 0)
-			printf(", ");
-		printf("%d", array[i]);
-	}
-	printf("\n");
-}
-
-/**
  * merge - Merges two sorted subarrays into one
  * @array: Original array
  * @temp: Temporary buffer
@@ -36,13 +18,15 @@ void merge(int *array, int *temp, size_t left, size_t mid, size_t right)
 	printf("[right]: ");
 	print_array(array + mid, right - mid);
 
+	/* Copy both halves to temp buffer */
 	for (i = left; i < right; i++)
 		temp[i] = array[i];
 
-	i = left;
-	j = mid;
-	k = left;
+	i = left;    /* Index for left subarray */
+	j = mid;     /* Index for right subarray */
+	k = left;    /* Index for merged array */
 
+	/* Merge back to original array */
 	while (i < mid && j < right)
 	{
 		if (temp[i] <= temp[j])
@@ -50,9 +34,12 @@ void merge(int *array, int *temp, size_t left, size_t mid, size_t right)
 		else
 			array[k++] = temp[j++];
 	}
+
+	/* Copy remaining elements from left subarray */
 	while (i < mid)
 		array[k++] = temp[i++];
 
+	/* Copy remaining elements from right subarray */
 	while (j < right)
 		array[k++] = temp[j++];
 
@@ -74,12 +61,16 @@ void merge_sort_recursive(int *array, int *temp, size_t left, size_t right)
 	if (right - left < 2)
 		return;
 
+	/* Left size <= right size: mid = left + (right - left) / 2 */
 	mid = left + (right - left) / 2;
 
+	/* Sort left array first */
 	merge_sort_recursive(array, temp, left, mid);
 
+	/* Sort right array */
 	merge_sort_recursive(array, temp, mid, right);
 
+	/* Merge the sorted halves */
 	merge(array, temp, left, mid, right);
 }
 
@@ -95,11 +86,13 @@ void merge_sort(int *array, size_t size)
 	if (array == NULL || size < 2)
 		return;
 
+	/* Single malloc call */
 	temp = malloc(sizeof(int) * size);
 	if (temp == NULL)
 		return;
 
 	merge_sort_recursive(array, temp, 0, size);
 
+	/* Single free call */
 	free(temp);
 }
